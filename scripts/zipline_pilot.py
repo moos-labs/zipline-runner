@@ -197,9 +197,13 @@ def main():
                 order_target_percent(context.asset, 0.0)
                 context.invested = False
 
+        # NOTE: session labels in zipline-reloaded 3.2 / exchange_calendars
+        # 4.x are timezone-NAIVE. run_algorithm -> sessions_distance ->
+        # parse_date rejects tz-aware dates ("a Date must be timezone
+        # naive"), so start/end are passed naive here.
         perf = run_algorithm(
-            start=pd.Timestamp(backtest_start, tz="UTC"),
-            end=pd.Timestamp(backtest_end, tz="UTC"),
+            start=pd.Timestamp(backtest_start),
+            end=pd.Timestamp(backtest_end),
             initialize=initialize,
             handle_data=handle_data,
             capital_base=CAPITAL_BASE,
